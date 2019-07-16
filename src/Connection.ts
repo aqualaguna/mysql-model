@@ -5,13 +5,14 @@ import * as mysql from 'mysql';
  * @description used for managing connection using singleton pattern.
  */
 
-export class Connection {
+export default class Connection {
     static pool : mysql.Pool;
     static connection: mysql.Connection;
-    static host: string;
-    static user: string;
-    static password: string;
-    static database: string;
+    static host: string = 'localhost';
+    static user: string = 'root';
+    static password: string = '';
+    static database: string= 'mysql';
+    static port: number = 3306;
     /**
      * set credential for using mysql database
      * @param host where the mysql is hosted
@@ -23,11 +24,13 @@ export class Connection {
         host: string,
         user: string,
         password: string,
-        database: string) {
+        database: string,
+        port: number = 3306) {
             Connection.host = host;
             Connection.user = user;
             Connection.password = password;
             Connection.database = database;
+            Connection.port = port;
     }
     /**
      * get connection instance.
@@ -35,10 +38,12 @@ export class Connection {
     static getInstance() : mysql.Connection {
         if (!Connection.connection) {
             Connection.connection = mysql.createConnection({
-                host: this.host,
-                user: this.user,
-                password: this.password,
-                database: this.database
+                supportBigNumbers   : true,
+                port                : this.port,
+                host                : this.host,
+                user                : this.user,
+                password            : this.password,
+                database            : this.database
             });
             
             Connection.connection.connect((err) => {
@@ -60,11 +65,13 @@ export class Connection {
     static getPool(connection_limit : number = 10) : mysql.Pool {
         if (!Connection.pool) {
             Connection.pool =  mysql.createPool({
-                connectionLimit : connection_limit,
-                host            : this.host,
-                user            : this.user,
-                password        : this.password,
-                database        : this.database
+                supportBigNumbers   : true,
+                connectionLimit     : connection_limit,
+                host                : this.host,
+                port                : this.port,
+                user                : this.user,
+                password            : this.password,
+                database            : this.database
             });
         }
         return Connection.pool;

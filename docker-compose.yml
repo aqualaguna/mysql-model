@@ -5,9 +5,14 @@ services:
       restart: always
       environment:
         MYSQL_ROOT_PASSWORD: $SQL_PASSWORD
+        MYSQL_USER: $SQL_USER
+        MYSQL_PASSWORD: $SQL_PASSWORD
+        MYSQL_DATABASE: $SQL_DATABASE
       ports:
         - 3307:3306
       volumes:
         - mysql:/var/lib/mysql
+        - ./init.sql:/data/application/init.sql
+      command: --init-file=/data/application/init.sql
 volumes:
   mysql:
