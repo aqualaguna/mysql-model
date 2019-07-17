@@ -9,11 +9,11 @@ export class ReadLayer extends CreateLayer {
         let query = '';
         if(Array.isArray(ids)) {
             // @ts-ignore
-            query = `SELECT * FROM ${this.constructor.getTableName()} WHERE ${this.constructor.primary_key} IN (?)`;
+            query = `SELECT * FROM ${this.getTableName()} WHERE ${this.primary_key} IN (?)`;
             
         } else {
             // @ts-ignore
-            query = `SELECT * FROM ${this.constructor.getTableName()} WHERE ${this.constructor.primary_key} = ?`;
+            query = `SELECT * FROM ${this.getTableName()} WHERE ${this.primary_key} = ?`;
         }
         return new Promise((resolve, reject) => {
             this.getConnectionPool().query(query, ids, function(err, results, fields) {
@@ -27,7 +27,14 @@ export class ReadLayer extends CreateLayer {
             })
         })
         .then((data: any) => {
-            return data.results;
+            let rows = data.results;
+            let result = rows.map((row : any) => {
+                let temp = new this();
+                temp.fill(row);
+                temp.isExist = true;
+                return temp;
+            });
+            return result.length == 1 ? result[0] : result;
         }).catch(e => {
             console.log(e);
             return [];

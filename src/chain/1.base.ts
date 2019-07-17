@@ -85,7 +85,9 @@ export class Base {
         for (const key of this.keys) {
             temp[key] = this[key];
         }
-        temp[this.primary_key] = this[this.primary_key];
+        if (temp[this.primary_key]) {
+            temp[this.primary_key] = this[this.primary_key];
+        }
         return temp as object;
     }
 }

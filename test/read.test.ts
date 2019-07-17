@@ -2,13 +2,15 @@ import MysqlModel from '../src';
 import { CollectionCaseType } from "../src/chain/1.base";
 import Connection from '../src/Connection';
 import { connectToTestDatabase } from './helper';
+import { now } from '../src/type';
 
 class Authors extends MysqlModel {
     attribute = {
         first_name: '',
         last_name: '',
         email: '',
-        birthdate: new Date()
+        birthdate: new Date(),
+        added: now
     };
     constructor() {
         super();
@@ -25,6 +27,7 @@ describe('Read Class Test', () => {
     
     test('read by id', async () => {
         let author = await Authors.find(1);
+        console.log(author);
         expect(author).toBeDefined();
         expect(author.id).toBe(1);
     });

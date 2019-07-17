@@ -45,4 +45,19 @@ describe('Base Class Test', () => {
             description: 'test4',
         }));
     });
+
+    test('test convert model to ordinary object', () => {
+        let t = new UserDetail();
+        t.name = 'test';
+        t.email = 'test2';
+        t.password = 'test3';
+        t.description = 'test4';
+        const temp = t.toObject();
+        expect(temp).toEqual(expect.objectContaining({
+            name: 'test',
+            email: 'test2',
+            password: 'test3',
+            description: 'test4',
+        }));
+    });
 })
