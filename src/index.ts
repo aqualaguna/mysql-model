@@ -1,6 +1,6 @@
-import { CreateLayer } from "./chain/2.create";
+import { ReadLayer } from "./chain/3.read";
 
-export default class MysqlModel extends CreateLayer{
+export default class MysqlModel extends ReadLayer{
     constructor() {
         super();
     }

@@ -1,6 +1,7 @@
 import * as changeCase from 'change-case';
 import { Pool } from 'mysql';
 import Connection from '../Connection';
+import { now } from '../type';
 /// <reference path="change-case/change-case.d.ts" />
 /**
  * enumeration for style of name collection
@@ -33,11 +34,21 @@ export enum CollectionCaseType {
      */
     PascalCase = 'pascal'
 }
-
+interface TimestampField {
+    created_at: string;
+    updated_at: string;
+}
 export class Base {
-    protected timestamp : boolean = true;
+    protected timestamp : boolean = false;
+    protected static primary_key : string = 'id';
+    protected static default_limit : number = 500;
+    protected timestamp_field : TimestampField = {
+        created_at: 'created_at',
+        updated_at: 'updated_at'
+    };
+    protected static table_name : string | null = null; 
     protected mark : string[] = [];
-    protected markValue : any = 'CURRENT_TIMESTAMP';
+    protected markValue : any = now;
     protected unmarkValue : any = null;
     protected isExist: boolean = false;
     /**
@@ -57,7 +68,9 @@ export class Base {
      * get tablename by class name
      */
     static getTableName(type: CollectionCaseType = this.collectionStyle): string {
-        
+        if (this.table_name) {
+            return this.table_name;
+        }
         return changeCase[type](this.name);
     }
 
@@ -72,6 +85,7 @@ export class Base {
         for (const key of this.keys) {
             temp[key] = this[key];
         }
+        temp[this.primary_key] = this[this.primary_key];
         return temp as object;
     }
 }
