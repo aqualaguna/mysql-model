@@ -1,4 +1,5 @@
 import mysql from 'mysql';
+import ValueNotValid from '../error/ValueNotValidError';
 export enum Operator {
     equal = '=',
     greater = '>',
@@ -8,6 +9,7 @@ export enum Operator {
     notEqual = '<>',
     like = 'like',
     isNull = 'IS NULL',
+    in = 'in',
     isNotNull = 'IS NOT NULL',
 }
 export enum LogicalOperator {
@@ -26,6 +28,7 @@ export default class QueryBuilder {
     params: Array<any> = [];
     first: boolean = true; 
 
+
     private applyQuery(query: string, params: Array<any>) {
         this.query += query;
         this.params = this.params.concat(params);
@@ -35,7 +38,7 @@ export default class QueryBuilder {
         return mysql.format(this.query, this.params);
     }
 
-    where(field: string, operator: Operator|string|number, value : string|null|number|Function = null, logic: LogicalOperator = LogicalOperator.and) : QueryBuilder {
+    where(field: string, operator: Operator|string|number, value : any = null, logic: LogicalOperator = LogicalOperator.and) : QueryBuilder {
         let temp = '';
         let params : any = [];
         // logical operator
@@ -56,6 +59,12 @@ export default class QueryBuilder {
             case Operator.isNotNull : 
             case Operator.equal : 
                 temp += operator + ' ? ';
+            break;
+            case Operator.in:
+                temp += operator + ' (?) ';
+                if (!Array.isArray(value)) {
+                    throw new ValueNotValid('Operator in required value tobe array.');
+                }
             break;
             default: 
                 temp += Operator.equal + ' ? ';
@@ -88,9 +97,32 @@ export default class QueryBuilder {
         return this.where(field, Operator.isNotNull, null, logic)
     }
 
-    orderBy(field: string, type: string | OrderByType = OrderByType.asc){
+    whereIn(field: string, value: Array<any>, logic: LogicalOperator = LogicalOperator.and) : QueryBuilder {
+        return this.where(field, Operator.in, value, logic)
+    }
+
+    whereLike(field: string, value: string, logic: LogicalOperator = LogicalOperator.and) : QueryBuilder {
+        return this.where(field, Operator.like, value, logic)
+    }
+
+    orderBy(field: string, type: string | OrderByType = OrderByType.asc) : QueryBuilder {
         this.query += `ORDER BY ?? ${type}`;
         this.params.push(field);
+        return this;
+    }
+
+    limit (count: number) : QueryBuilder {
+        if (this.query.match('LIMIT ')) {
+            this.query.replace(/LIMIT [0-9]+/, `LIMIT ${count}`)
+        } else {
+            this.query += `LIMIT ${count}`;
+        }
+        return this;
     }
     
+    reset() {
+        this.query = 'WHERE ';
+        this.params = [];
+        this.first = true; 
+    }
 }

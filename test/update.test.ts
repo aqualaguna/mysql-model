@@ -1,6 +1,4 @@
 import MysqlModel from '../src';
-import { CollectionCaseType } from "../src/chain/1.base";
-import Connection from '../src/Connection';
 import { connectToTestDatabase } from './helper';
 
 class Authors extends MysqlModel {
@@ -23,9 +21,9 @@ beforeAll((done) => {
     done();
 })
 
-describe('delete Class Test', () => {
+describe('update Class Test', () => {
     
-    test('delete row', async () => {
+    test('update row', async () => {
         let t = new Authors();
         t.first_name = 'david';
         t.last_name = 'gantt';
@@ -40,8 +38,4 @@ describe('delete Class Test', () => {
         expect(temp).toBeNull();
     });
 
-    test('delete all', async () => {
-        expect(await Authors.deleteAll()).toBeTruthy();
-        expect((await Authors.all()).length).toBe(0);
-    });
 });

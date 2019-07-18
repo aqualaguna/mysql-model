@@ -1,6 +1,5 @@
 import { Base } from "./1.base";
 import { handleReject } from "../error/handleReject";
-import { now } from "../type";
 
 
 /**
@@ -23,7 +22,7 @@ export class CreateLayer extends Base {
             // update the existsing row
             // check timestamp
             if (this.timestamp) {
-                temp[this.timestamp_field.updated_at] = now;
+                temp[this.timestamp_field.updated_at] = this.markValue;
             }
             // @ts-ignore
             if (!(await this.constructor.updating(temp))) {
@@ -49,8 +48,8 @@ export class CreateLayer extends Base {
         } else {
             // check timestamp
             if (this.timestamp) {
-                temp[this.timestamp_field.created_at] = now;
-                temp[this.timestamp_field.updated_at] = now;
+                temp[this.timestamp_field.created_at] = this.markValue;
+                temp[this.timestamp_field.updated_at] = this.markValue;
             }
             //@ts-ignore
             if (!(await this.constructor.creating(temp))) {

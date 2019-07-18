@@ -27,9 +27,13 @@ describe('Read Class Test', () => {
     
     test('read by id', async () => {
         let author = await Authors.find(1);
-        console.log(author);
         expect(author).toBeDefined();
         expect(author.id).toBe(1);
+    });
+
+    test('read by not existing id', async () => {
+        let author = await Authors.find(1000);
+        expect(author).toBeNull();
     });
 
     test('read first', async () => {
@@ -42,12 +46,15 @@ describe('Read Class Test', () => {
         let author = await Authors.find([1, 2]);
         expect(author).toBeDefined();
         expect(Array.isArray(author)).toBeTruthy();
+        expect(author.map((auth : any) => auth.id)).toContain(1);
+        expect(author.map((auth : any) => auth.id)).toContain(2);
     });
 
     test('read all', async () => {
         let author = await Authors.all();
         expect(author).toBeDefined();
         expect(Array.isArray(author)).toBeTruthy();
+        expect(author.length).toBeGreaterThan(1);
     });
     
 })

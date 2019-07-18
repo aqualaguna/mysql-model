@@ -1,6 +1,6 @@
-import RelationLayer from "./chain/8.relation";
+import JoinLayer from "./chain/10.join";
 
-export default class MysqlModel extends RelationLayer{
+export default class MysqlModel extends JoinLayer{
     constructor() {
         super();
     }

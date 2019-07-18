@@ -1,8 +1,8 @@
 import { CreateLayer } from "./2.create";
-
+import mysql from 'mysql';
 export class ReadLayer extends CreateLayer {
     /**
-     * find document by id
+     * find rows by id
      * @param ids Array of string / string. identification
      */
     static async find(ids: Array<string|number> | string|number) : Promise<any> {
@@ -10,13 +10,12 @@ export class ReadLayer extends CreateLayer {
         if(Array.isArray(ids)) {
             // @ts-ignore
             query = `SELECT * FROM ${this.getTableName()} WHERE ${this.primary_key} IN (?)`;
-            
         } else {
             // @ts-ignore
             query = `SELECT * FROM ${this.getTableName()} WHERE ${this.primary_key} = ?`;
         }
         return new Promise((resolve, reject) => {
-            this.getConnectionPool().query(query, ids, function(err, results, fields) {
+            this.getConnectionPool().query(query, [ids], function(err, results, fields) {
                 if (err) {
                     reject(err);
                 }
@@ -34,23 +33,31 @@ export class ReadLayer extends CreateLayer {
                 temp.isExist = true;
                 return temp;
             });
-            return result.length == 1 ? result[0] : result;
+            switch(result.length) {
+                case 0:
+                    result = null;
+                break;
+                case 1:
+                    result = result[0];
+                break;
+            }
+            return result;
         }).catch(e => {
             console.log(e);
-            return [];
+            return null;
         });
     }
 
     /**
-     * get all data from collections
+     * get all data from table
      */
     static async all(limit: number|undefined = undefined) {
         if (!limit) {
             // @ts-ignore
-            limit = this.constructor.default_limit;
+            limit = this.default_limit;
         }
         // @ts-ignore
-        let query = `SELECT * FROM ${this.constructor.getTableName()} LIMIT ${limit}`;
+        let query = `SELECT * FROM ${this.getTableName()} LIMIT ${limit}`;
         return new Promise((resolve, reject) => {
             this.getConnectionPool().query(query, null, function(err, results, fields) {
                 if (err) {
@@ -63,7 +70,14 @@ export class ReadLayer extends CreateLayer {
             })
         })
         .then((data: any) => {
-            return data.results;
+            let rows = data.results;
+            let result = rows.map((row : any) => {
+                let temp = new this();
+                temp.fill(row);
+                temp.isExist = true;
+                return temp;
+            });
+            return result;
         }).catch(e => {
             console.log(e);
             return [];
@@ -78,15 +92,15 @@ export class ReadLayer extends CreateLayer {
             // @ts-ignore
             let id = this[this.constructor.primary_key];
             let data = await ReadLayer.find(id);
-            console.log(data);
-
+            this.fill(data.toObject());
         }
     }
 
     /**
      * query again to database with primary key
      */
-    static async first() {
-        return this.all(1);
+    static async first() : Promise<any> {
+        let result = await this.all(1)
+        return result.length == 1 ? result[0] : null;
     }
 }
