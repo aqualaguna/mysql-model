@@ -23,18 +23,9 @@ export default class UpdateLayer extends FakerLayer {
          if (!(await this.constructor.updating(temp))) {
             throw new Error("creating permission denied.");
         }
-        return new Promise((resolve, reject) => {
-            // @ts-ignore
-            CreateLayer.getConnectionPool().query(`UPDATE ${this.constructor.getTableName()} SET ? WHERE ${this.constructor.primary_key} = ${this[this.constructor.primary_key]}`, temp, function(error, results, fields) {
-                if (error) {
-                    reject(error);
-                }
-                resolve({
-                    results,
-                    fields
-                });
-            })
-        }).then((result : any) => {
+        // @ts-ignore
+        return this.executeRawQuery(`UPDATE ${this.constructor.getTableName()} SET ? WHERE ${this.constructor.primary_key} = ${this[this.constructor.primary_key]}`, temp)
+        .then((result : any) => {
             this.isExist = true;
             // @ts-ignore
             this.constructor.updated(this[this.constructor.primary_key], this.toObject());

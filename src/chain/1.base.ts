@@ -90,4 +90,32 @@ export class Base {
         }
         return temp as object;
     }
+
+    protected static async executeRawQuery(query: string,  params: any) : Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.getConnectionPool().query(query, params, function(error, results, fields) {
+                if (error) {
+                    reject(error);
+                }
+                resolve({
+                    results,
+                    fields
+                });
+            })
+        })
+    }
+
+    protected async executeRawQuery(query: string,  params: any) : Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.getConnectionPool().query(query, params, function(error : any, results: any, fields: any) {
+                if (error) {
+                    reject(error);
+                }
+                resolve({
+                    results,
+                    fields
+                });
+            })
+        })
+    }
 }

@@ -28,18 +28,11 @@ export class CreateLayer extends Base {
             if (!(await this.constructor.updating(temp))) {
                 throw new Error("creating permission denied.");
             }
-            return new Promise((resolve, reject) => {
+            return this.executeRawQuery(
                 // @ts-ignore
-                CreateLayer.getConnectionPool().query(`UPDATE ${this.constructor.getTableName()} SET ? WHERE ${this.constructor.primary_key} = ${this[this.constructor.primary_key]}`, temp, function(error, results, fields) {
-                    if (error) {
-                        reject(error);
-                    }
-                    resolve({
-                        results,
-                        fields
-                    });
-                })
-            }).then((result : any) => {
+                `UPDATE ${this.constructor.getTableName()} SET ? WHERE ${this.constructor.primary_key} = ${this[this.constructor.primary_key]}`,
+                temp
+            ).then((result : any) => {
                 this.isExist = true;
                 // @ts-ignore
                 this.constructor.updated(this[this.constructor.primary_key], this.toObject());
@@ -56,23 +49,19 @@ export class CreateLayer extends Base {
                 throw new Error("creating permission denied.");
             }
             // convert callback into promise
-            return new Promise((resolve, reject) => {
-                // @ts-ignore
-                CreateLayer.getConnectionPool().query(`INSERT INTO ${this.constructor.getTableName()} SET ?`, temp, function (error, results, fields) {
-                    if (error) reject(error);
-                    resolve({
-                        results,
-                        fields
-                    });
-                });
-            }).then((data : any) => {
-                this.isExist = true;
-                // @ts-ignore
-                this[this.constructor.primary_key] = data.results.insertId;
-                //@ts-ignore
-                this.constructor.created(this[this.constructor.primary_key], this.toObject());
-                return true;
-            }).catch(handleReject)
+            return this.executeRawQuery(
+                    // @ts-ignore
+                    `INSERT INTO ${this.constructor.getTableName()} SET ?`,
+                    temp
+                )
+                .then((data : any) => {
+                    this.isExist = true;
+                    // @ts-ignore
+                    this[this.constructor.primary_key] = data.results.insertId;
+                    //@ts-ignore
+                    this.constructor.created(this[this.constructor.primary_key], this.toObject());
+                    return true;
+                }).catch(handleReject)
             // create new one
         }
         return false;

@@ -16,18 +16,13 @@ export default class DeleteLayer extends ReadLayer {
             if(!await this.constructor.deleting(this[this.constructor.primary_key])) {
                 throw new Error('deleted denied');
             }
-            return new Promise((resolve, reject) => {
+            return this.executeRawQuery(
                 // @ts-ignore
-                DeleteLayer.getConnectionPool().query(`DELETE FROM ${this.constructor.getTableName()} WHERE ${this.constructor.primary_key} = ?`, this[this.constructor.primary_key], function(err, results, fields) {
-                    if(err) {
-                        reject(err);
-                    }
-                    resolve({
-                        results,
-                        fields
-                    })
-                })
-            }).then(result => {
+                `DELETE FROM ${this.constructor.getTableName()} WHERE ${this.constructor.primary_key} = ?`,
+                // @ts-ignore
+                this[this.constructor.primary_key]
+            )
+            .then(result => {
                 console.log(result);
                 // @ts-ignore
                 this.constructor.deleted(this[this.constructor.primary_key])
@@ -40,42 +35,32 @@ export default class DeleteLayer extends ReadLayer {
     
     
     /**
-     * delete all rows in table
+     * delete all rows in table no trigger to event.
      * caution when using this function. this is not reversible
      */
     static async deleteAll() : Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            this.getConnectionPool().query(`DELETE FROM ${this.getTableName()}`, null, function(err, results, fields) {
-                if(err) {
-                    reject(err);
-                }
-                resolve({
-                    results,
-                    fields
-                })
-            })
-        }).then(result => {
+        return this.executeRawQuery(
+            // @ts-ignore
+            `DELETE FROM ${this.getTableName()}`,
+            null
+        )
+        .then(result => {
             console.log(result);
             return true;
         }).catch(handleReject)
     }
 
     /**
-     * delete multiple document in table
+     * delete multiple document in table no trigger to event
      * @param ids array of id or just id.
      */
     static async delete(ids: Array<string|number> | string|number) : Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            this.getConnectionPool().query(`DELETE FROM ${this.getTableName()} WHERE ${this.primary_key} IN (?)`, [ids], function(err, results, fields) {
-                if(err) {
-                    reject(err);
-                }
-                resolve({
-                    results,
-                    fields
-                })
-            })
-        }).then(result => {
+        return this.executeRawQuery(
+            // @ts-ignore
+            `DELETE FROM ${this.getTableName()} WHERE ${this.primary_key} IN (?)`,
+            [ids]
+        )
+        .then(result => {
             console.log(result);
             return true;
         }).catch(handleReject)

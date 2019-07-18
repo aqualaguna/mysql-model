@@ -14,17 +14,10 @@ export class ReadLayer extends CreateLayer {
             // @ts-ignore
             query = `SELECT * FROM ${this.getTableName()} WHERE ${this.primary_key} = ?`;
         }
-        return new Promise((resolve, reject) => {
-            this.getConnectionPool().query(query, [ids], function(err, results, fields) {
-                if (err) {
-                    reject(err);
-                }
-                resolve({
-                    results,
-                    fields
-                })
-            })
-        })
+        this.executeRawQuery(
+            query,
+            [ids]
+        )
         .then((data: any) => {
             let rows = data.results;
             let result = rows.map((row : any) => {
@@ -51,24 +44,17 @@ export class ReadLayer extends CreateLayer {
     /**
      * get all data from table
      */
-    static async all(limit: number|undefined = undefined) {
+    static async all(limit: number|undefined = undefined) : Promise<any> {
         if (!limit) {
             // @ts-ignore
             limit = this.default_limit;
         }
         // @ts-ignore
         let query = `SELECT * FROM ${this.getTableName()} LIMIT ${limit}`;
-        return new Promise((resolve, reject) => {
-            this.getConnectionPool().query(query, null, function(err, results, fields) {
-                if (err) {
-                    reject(err);
-                }
-                resolve({
-                    results,
-                    fields
-                })
-            })
-        })
+        this.executeRawQuery(
+            query,
+            null
+        )
         .then((data: any) => {
             let rows = data.results;
             let result = rows.map((row : any) => {
