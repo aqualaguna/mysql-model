@@ -1,5 +1,5 @@
-import ExecuteLayer from "./9.execute-query";
+import TransactionLayer from "./9.transaction";
 
-export default class JoinLayer extends ExecuteLayer {
+export default class JoinLayer extends TransactionLayer {
     
 }

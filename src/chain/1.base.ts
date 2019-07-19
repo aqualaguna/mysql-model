@@ -85,8 +85,10 @@ export class Base {
         for (const key of this.keys) {
             temp[key] = this[key];
         }
-        if (temp[this.primary_key]) {
-            temp[this.primary_key] = this[this.primary_key];
+        // @ts-ignore
+        if (temp[this.constructor.primary_key]) {
+            // @ts-ignore
+            temp[this.constructor.primary_key] = this[this.constructor.primary_key];
         }
         return temp as object;
     }
@@ -107,7 +109,8 @@ export class Base {
 
     protected async executeRawQuery(query: string,  params: any) : Promise<any> {
         return new Promise((resolve, reject) => {
-            this.getConnectionPool().query(query, params, function(error : any, results: any, fields: any) {
+            // @ts-ignore
+            this.constructor.getConnectionPool().query(query, params, function(error : any, results: any, fields: any) {
                 if (error) {
                     reject(error);
                 }

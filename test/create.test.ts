@@ -57,4 +57,7 @@ describe('Create Class Test', () => {
         expect(author.id).toBeDefined();
         expect(author).toBeInstanceOf(Authors);
     });
+    afterAll(async () => {
+        await Authors.delete([101, 102]);
+    })
 })

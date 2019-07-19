@@ -14,11 +14,13 @@ export class ReadLayer extends CreateLayer {
             // @ts-ignore
             query = `SELECT * FROM ${this.getTableName()} WHERE ${this.primary_key} = ?`;
         }
-        this.executeRawQuery(
+        
+        return this.executeRawQuery(
             query,
             [ids]
         )
         .then((data: any) => {
+            console.log(data);
             let rows = data.results;
             let result = rows.map((row : any) => {
                 let temp = new this();
@@ -26,6 +28,7 @@ export class ReadLayer extends CreateLayer {
                 temp.isExist = true;
                 return temp;
             });
+            console.log(result);
             switch(result.length) {
                 case 0:
                     result = null;
@@ -34,6 +37,7 @@ export class ReadLayer extends CreateLayer {
                     result = result[0];
                 break;
             }
+            console.log(result);
             return result;
         }).catch(e => {
             console.log(e);
@@ -51,7 +55,7 @@ export class ReadLayer extends CreateLayer {
         }
         // @ts-ignore
         let query = `SELECT * FROM ${this.getTableName()} LIMIT ${limit}`;
-        this.executeRawQuery(
+        return this.executeRawQuery(
             query,
             null
         )

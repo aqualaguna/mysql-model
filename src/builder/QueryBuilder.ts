@@ -1,5 +1,6 @@
 import mysql from 'mysql';
 import ValueNotValid from '../error/ValueNotValidError';
+import { Base } from '../chain/1.base';
 export enum Operator {
     equal = '=',
     greater = '>',
@@ -23,7 +24,7 @@ export enum OrderByType {
     desc = 'DESC',
 }
 
-export default class QueryBuilder {
+export default class QueryBuilder extends Base{
     query: string = 'WHERE ';
     params: Array<any> = [];
     first: boolean = true; 
@@ -34,7 +35,7 @@ export default class QueryBuilder {
         this.params = this.params.concat(params);
         this.first = false;
     }
-    toString() {
+    getQueryString() {
         return mysql.format(this.query, this.params);
     }
 
