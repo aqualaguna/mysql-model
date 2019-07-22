@@ -118,7 +118,7 @@ CREATE TABLE `authors` (
   `first_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `last_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `birthdate` date NOT NULL,
+  `birthdate` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
@@ -144,7 +144,7 @@ INSERT INTO `authors` (`id`, `first_name`, `last_name`, `email`, `birthdate`, `c
 INSERT INTO `authors` (`id`, `first_name`, `last_name`, `email`, `birthdate`, `created_at`, `updated_at`) VALUES (17, 'Ada', 'Bayer', 'helene.o\'connell@example.com', '2017-03-08', '2002-11-20 15:55:50', '2009-06-18 07:16:29');
 INSERT INTO `authors` (`id`, `first_name`, `last_name`, `email`, `birthdate`, `created_at`, `updated_at`) VALUES (18, 'Kenyon', 'Lehner', 'vsanford@example.com', '2013-03-30', '1990-02-03 02:53:31', '2003-03-27 13:19:57');
 INSERT INTO `authors` (`id`, `first_name`, `last_name`, `email`, `birthdate`, `created_at`, `updated_at`) VALUES (19, 'Emelia', 'Kessler', 'pjones@example.org', '1977-07-13', '2000-05-15 12:22:43', '2011-10-31 20:09:37');
-INSERT INTO `authors` (`id`, `first_name`, `last_name`, `email`, `birthdate`, `created_at`, `updated_at`) VALUES (20, 'Chelsey', 'Cronin', 'bhomenick@example.net', '2000-12-20', '1995-07-09 05:57:41', '2015-05-05 15:18:58');
+INSERT INTO `authors` (`id`, `first_name`, `last_name`, `email`, `birthdate`, `created_at`, `updated_at`) VALUES (20, 'Emelia', 'Cronin', 'bhomenick@example.net', '2000-12-20', '1995-07-09 05:57:41', '2015-05-05 15:18:58');
 
 
 #

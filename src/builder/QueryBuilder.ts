@@ -56,10 +56,13 @@ export default class QueryBuilder extends Base{
             case Operator.less : 
             case Operator.lessThan : 
             case Operator.like : 
-            case Operator.isNull : 
-            case Operator.isNotNull : 
             case Operator.equal : 
                 temp += operator + ' ? ';
+            break;
+
+            case Operator.isNull : 
+            case Operator.isNotNull : 
+                temp += operator;
             break;
             case Operator.in:
                 temp += operator + ' (?) ';
@@ -77,8 +80,8 @@ export default class QueryBuilder extends Base{
         // value
         if (!(operator == Operator.isNotNull || operator == Operator.isNull)) {
             params.push(value);
-            this.applyQuery(temp, params);
         }
+        this.applyQuery(temp, params);
         return this;
     }
 

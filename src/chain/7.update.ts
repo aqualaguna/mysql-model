@@ -16,19 +16,17 @@ export default class UpdateLayer extends FakerLayer {
         if (this.timestamp) {
             data[this.timestamp_field.updated_at] = this.markValue;
         }
-        if(!(await this.updating(data))) {
-            throw new Error("updating permission denied.");
-        }
-         // @ts-ignore
-         if (!(await this.constructor.updating(temp))) {
+        // @ts-ignore
+        if (!(await this.constructor.updating(data))) {
             throw new Error("creating permission denied.");
         }
         // @ts-ignore
-        return this.executeRawQuery(`UPDATE ${this.constructor.getTableName()} SET ? WHERE ${this.constructor.primary_key} = ${this[this.constructor.primary_key]}`, temp)
+        return this.executeRawQuery(`UPDATE ${this.constructor.getTableName()} SET ? WHERE ${this.constructor.primary_key} = ${this[this.constructor.primary_key]}`, data)
         .then((result : any) => {
             this.isExist = true;
             // @ts-ignore
             this.constructor.updated(this[this.constructor.primary_key], this.toObject());
+            this.fill(data);
             return true;
         }).catch(handleReject)
     }

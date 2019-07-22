@@ -51,8 +51,9 @@ export default class UnifiedBuilder extends QueryBuilder {
 
 
     async runGet() :Promise<any>{
+        console.log(this.cls.getTableName);
         let query = this.selectQuery;
-
+        console.log(query);
         return this.executeRawQuery(query, null)
         .then((data: any) => {
             let rows = data.results;
