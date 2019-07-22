@@ -8,14 +8,12 @@ export default class UnifiedBuilder extends QueryBuilder {
     }
     constructor(protected cls: any) {
         super();
-        console.log(this.cls);
     }
 
     runUpdate(data:any) : Promise<boolean> {
         let query = this.updateQuery;
         return this.executeRawQuery(query, data)
         .then((data: any) => {
-            console.log(data)
             this.reset()
             return true;
         }).catch(e => {
@@ -25,9 +23,7 @@ export default class UnifiedBuilder extends QueryBuilder {
     }
     collumns: Array<string> = [];
     get selectQuery () : string {
-        console.log(this.cls);
         let result = `SELECT ` + (this.collumns.length == 0 ? '*' : this.collumns.map(t => '`' + t + '`').join(',')) + ` FROM ${this.cls.getTableName()} ` + this.getQueryString();
-        console.log(result);
         return result;
     }
 
@@ -102,7 +98,6 @@ export default class UnifiedBuilder extends QueryBuilder {
         let query = this.deleteQuery;
         return this.executeRawQuery(query, null)
         .then((data: any) => {
-            console.log(data)
             this.reset();
             return true;
         }).catch(e => {

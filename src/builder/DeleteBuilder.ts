@@ -14,7 +14,6 @@ export default class DeleteBuilder extends QueryBuilder {
         let query = this.query;
         return this.executeRawQuery(query, null)
         .then((data: any) => {
-            console.log(data)
             this.qb.reset();
             return true;
         }).catch(e => {

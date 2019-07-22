@@ -20,7 +20,6 @@ export class ReadLayer extends CreateLayer {
             [ids]
         )
         .then((data: any) => {
-            console.log(data);
             let rows = data.results;
             let result = rows.map((row : any) => {
                 let temp = new this();
@@ -28,7 +27,6 @@ export class ReadLayer extends CreateLayer {
                 temp.isExist = true;
                 return temp;
             });
-            console.log(result);
             switch(result.length) {
                 case 0:
                     result = null;
@@ -37,7 +35,6 @@ export class ReadLayer extends CreateLayer {
                     result = result[0];
                 break;
             }
-            console.log(result);
             return result;
         }).catch(e => {
             console.log(e);
@@ -81,7 +78,8 @@ export class ReadLayer extends CreateLayer {
         if (this.isExist) {
             // @ts-ignore
             let id = this[this.constructor.primary_key];
-            let data = await ReadLayer.find(id);
+            // @ts-ignore
+            let data = await this.constructor.find(id);
             this.fill(data.toObject());
         }
     }

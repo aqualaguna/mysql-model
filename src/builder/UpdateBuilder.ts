@@ -15,7 +15,6 @@ export default class UpdateBuilder extends QueryBuilder {
         let query = this.query;
         return this.executeRawQuery(query, data)
         .then((data: any) => {
-            console.log(data)
             this.qb.reset();
             return true;
         }).catch(e => {

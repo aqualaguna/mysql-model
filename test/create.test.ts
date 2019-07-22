@@ -19,7 +19,8 @@ class Authors extends MysqlModel {
 beforeAll((done) => {
     connectToTestDatabase();
     done();
-})
+});
+let author_ids : any = [];
 
 describe('Create Class Test', () => {
     
@@ -45,6 +46,8 @@ describe('Create Class Test', () => {
         t.email = 'hello@mail.com';
         t.birthdate = new Date('1996-09-09');
         expect(await t.save()).toBeTruthy();
+        expect(t.id).toBeDefined();
+        author_ids.push(t.id);
     });
 
     test('create row second method', async () => {
@@ -56,8 +59,11 @@ describe('Create Class Test', () => {
         })
         expect(author.id).toBeDefined();
         expect(author).toBeInstanceOf(Authors);
+        author_ids.push(author.id);
     });
     afterAll(async () => {
-        await Authors.delete([101, 102]);
+        if (author_ids.length > 0) {
+            await Authors.delete(author_ids);
+        }
     })
 })

@@ -33,7 +33,7 @@ export default class RelationLayer extends UpdateLayer {
             } else {
                 if (new through instanceof RelationLayer) {
                     // should be many to many relationship.
-                    return 1;
+                    return Promise.resolve(1);
                 } else {
                     throw new Error('Class extend from mysql model must be provided.');        
                 }

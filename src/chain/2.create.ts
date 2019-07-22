@@ -32,8 +32,12 @@ export class CreateLayer extends Base {
                 // @ts-ignore
                 `UPDATE ${this.constructor.getTableName()} SET ? WHERE ${this.constructor.primary_key} = ${this[this.constructor.primary_key]}`,
                 temp
-            ).then((result : any) => {
+            ).then((data : any) => {
                 this.isExist = true;
+                // manula update
+                if(this.timestamp) {
+                    this[this.timestamp_field.updated_at] = new Date();
+                }
                 // @ts-ignore
                 this.constructor.updated(this[this.constructor.primary_key], this.toObject());
                 return true;
@@ -56,6 +60,11 @@ export class CreateLayer extends Base {
                 )
                 .then((data : any) => {
                     this.isExist = true;
+                    // manual update timestamp
+                    if(this.timestamp) {
+                        this[this.timestamp_field.created_at] = new Date();
+                        this[this.timestamp_field.updated_at] = new Date();
+                    }
                     // @ts-ignore
                     this[this.constructor.primary_key] = data.results.insertId;
                     //@ts-ignore

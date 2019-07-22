@@ -23,7 +23,6 @@ export default class DeleteLayer extends ReadLayer {
                 this[this.constructor.primary_key]
             )
             .then(result => {
-                console.log(result);
                 // @ts-ignore
                 this.constructor.deleted(this[this.constructor.primary_key])
                 return true;
@@ -38,15 +37,14 @@ export default class DeleteLayer extends ReadLayer {
      * delete all rows in table no trigger to event.
      * caution when using this function. this is not reversible
      */
-    static async deleteAll() : Promise<boolean> {
+    static async deleteAll() : Promise<number> {
         return this.executeRawQuery(
             // @ts-ignore
             `DELETE FROM ${this.getTableName()}`,
             null
         )
-        .then(result => {
-            console.log(result);
-            return true;
+        .then((result : any) => {
+            return result.results.affectedRows;
         }).catch(handleReject)
     }
 
@@ -54,15 +52,14 @@ export default class DeleteLayer extends ReadLayer {
      * delete multiple document in table no trigger to event
      * @param ids array of id or just id.
      */
-    static async delete(ids: Array<string|number> | string|number) : Promise<boolean> {
+    static async delete(ids: Array<string|number> | string|number) : Promise<number> {
         return this.executeRawQuery(
             // @ts-ignore
             `DELETE FROM ${this.getTableName()} WHERE ${this.primary_key} IN (?)`,
             [ids]
         )
-        .then(result => {
-            console.log(result);
-            return true;
+        .then((data : any) => {
+            return data.results.affectedRows;
         }).catch(handleReject)
     }
 
