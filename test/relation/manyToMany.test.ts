@@ -14,7 +14,7 @@ class Authors extends MysqlModel {
         this.init();
     }
     address() {
-        return this.hasMany(Address, AddressAuthors);
+        return this.hasMany(Address, AddressAuthors, 'user_id');
     }
 }
 
@@ -28,8 +28,8 @@ class Address extends MysqlModel {
         this.init();
     }
 
-    users() {
-
+    authors() {
+        return this.hasMany(Authors, AddressAuthors, '', 'user_id');
     }
 
 }
@@ -43,9 +43,6 @@ class AddressAuthors extends MysqlModel {
         this.init();
     }
 
-    user() : Promise<Authors> {
-        return this.belongsTo(Authors);
-    }
 }
 
 // connect to firebase
@@ -57,11 +54,27 @@ let author_ids: any = [];
 
 describe('one to many query Class Test', () => {
     
-    test('author has many post', async () => {
-        
+    test('author has many address', async () => {
+        let author = await Authors.first();
+        let addresses = await author.address();
+        expect(addresses).toBeInstanceOf(Array);
+        expect(addresses.length).toBeGreaterThan(0);
+        expect(addresses[0].pivot).toBeDefined();
+        expect(addresses[0].pivot).toBeInstanceOf(AddressAuthors);
+        expect(addresses[0]).toBeInstanceOf(Address);
+        expect(addresses[0].pivot.user_id).toBe(author.id);
     });
 
-
+    test('address has many author', async () => {
+        let address = await Address.first();
+        let authors = await address.authors();
+        expect(authors).toBeInstanceOf(Array);
+        expect(authors.length).toBeGreaterThan(0);
+        expect(authors[0].pivot).toBeDefined();
+        expect(authors[0].pivot).toBeInstanceOf(AddressAuthors);
+        expect(authors[0]).toBeInstanceOf(Authors);
+        expect(authors[0].pivot.address_id).toBe(address.id);
+    });
 });
 
 afterAll(async () => {

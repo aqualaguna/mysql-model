@@ -9,7 +9,6 @@ class Authors extends MysqlModel {
         last_name: '',
         email: '',
         birthdate: new Date(),
-        added: new Date()
     };
     constructor() {
         super();
@@ -22,7 +21,6 @@ beforeAll((done) => {
     connectToTestDatabase();
     done();
 })
-
 describe('delete Class Test', () => {
     
     test('delete row', async () => {
@@ -39,9 +37,9 @@ describe('delete Class Test', () => {
         let temp = await Authors.find(id);
         expect(temp).toBeNull();
     });
-
-    test('delete all', async () => {
-        expect(await Authors.deleteAll()).toBeTruthy();
-        expect((await Authors.all()).length).toBe(0);
-    });
+    
+    // test('delete all', async () => {
+    //     expect(await Authors.deleteAll()).toBeTruthy();
+    //     expect((await Authors.all()).length).toBe(0);
+    // });
 });

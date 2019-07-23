@@ -18,7 +18,7 @@ export default class RelationLayer extends UpdateLayer {
         }
     }
 
-    hasMany(cls: any, through: any = undefined) :Promise<any> {
+    async hasMany(cls: any, through: any = undefined, foreign_key_left: string = '', foreign_key_right: string = '') :Promise<any> {
         if (new cls instanceof RelationLayer) {
             if(through == undefined || typeof through == "string") {
                 // should be foreign with many to one relation ship
@@ -35,7 +35,30 @@ export default class RelationLayer extends UpdateLayer {
             } else {
                 if (new through instanceof RelationLayer) {
                     // should be many to many relationship.
-                    return Promise.resolve(1);
+                    // @ts-ignore
+                    let default_field_left = pluralize.singular(this.constructor.getTableName()) + '_id';
+                    if(foreign_key_left != '') {
+                        default_field_left = foreign_key_left;
+                    }
+                    let pivot = await this.hasMany(through, default_field_left);
+                    let default_field_right = pluralize.singular(cls.getTableName()) + '_id';
+                    if (foreign_key_right != '') {
+                        default_field_right = foreign_key_right;
+                    }
+                    let right_ids = pivot.map((t : any) => t[default_field_right]);
+                    let result = await cls.find(right_ids);
+                    if (!Array.isArray(result)) {
+                        result = [result];
+                    }
+                    // apply pivot data
+                    result = result.map((res : any) => {
+                        let temp = pivot.find((p : any) => p[default_field_right] == res[cls.primary_key]);
+                        if (temp) {
+                            res.pivot = temp;
+                        }
+                        return res;
+                    })
+                    return result;
                 } else {
                     throw new Error('Class extend from mysql model must be provided.');        
                 }
