@@ -6,19 +6,35 @@ import UnifiedBuilder from "../builder/UnifiedBuilder";
  */
 
 export default class QueryLayer extends DeleteLayer{
-    
+    /**
+     * where query.
+     * @param field collumn in mysql
+     * @param operator operator like <. <>, >, >=, <= , like, in
+     * @param value anything work.
+     * @param logic and or xor
+     */
     static where(field: string, operator: Operator|string|number, value : string|null|number|Function = null, logic: LogicalOperator = LogicalOperator.and) : UnifiedBuilder {
         let temp = new UnifiedBuilder(this);
         temp.where(field, operator, value, logic);
         return temp;
     }
 
+    /**
+     * where null :attribute.
+     * @param field collumn in mysql
+     * @param logic and, or, xor
+     */
     static whereNull(field: string, logic: LogicalOperator = LogicalOperator.and) : UnifiedBuilder {
         let temp = new UnifiedBuilder(this);
         temp.whereNull(field, logic);
         return temp;
     }
 
+    /**
+     * where not null :attribute.
+     * @param field collumn in mysql
+     * @param logic and, or, xor
+     */
     static whereNotNull(field: string, logic: LogicalOperator = LogicalOperator.and) : UnifiedBuilder {
         let temp = new UnifiedBuilder(this);
         temp.whereNotNull(field, logic);

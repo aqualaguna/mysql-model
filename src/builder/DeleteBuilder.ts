@@ -1,6 +1,8 @@
 import QueryBuilder from "./QueryBuilder";
-import { Base } from "../chain/1.base";
 
+/**
+ * @deprecated merged with UnifiedBuilder class
+ */
 export default class DeleteBuilder extends QueryBuilder {
     collumns: Array<string> = [];
     get query () : string {

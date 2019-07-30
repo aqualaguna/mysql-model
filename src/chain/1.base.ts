@@ -74,6 +74,9 @@ export class Base {
         return changeCase[type](this.name);
     }
 
+    /**
+     * get connection pool.
+     */
     static getConnectionPool (): Pool {
         return Connection.getPool();
     }
@@ -93,6 +96,11 @@ export class Base {
         return temp as object;
     }
 
+    /**
+     * execute raw query.
+     * @param query string for raw query
+     * @param params any but can be array
+     */
     protected static async executeRawQuery(query: string,  params: any) : Promise<any> {
         return new Promise((resolve, reject) => {
             this.getConnectionPool().query(query, params, function(error, results, fields) {
@@ -107,6 +115,12 @@ export class Base {
         })
     }
 
+
+    /**
+     * execute raw query.
+     * @param query string for raw query
+     * @param params any but can be array
+     */
     protected async executeRawQuery(query: string,  params: any) : Promise<any> {
         return new Promise((resolve, reject) => {
             // @ts-ignore

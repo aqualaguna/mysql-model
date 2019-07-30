@@ -1,6 +1,9 @@
 import QueryBuilder from "./QueryBuilder";
 import mysql from 'mysql';
 
+/**
+ * @deprecated merged with UnifiedBuilder class
+ */
 export default class SelectBuilder extends QueryBuilder{
     collumns: Array<string> = [];
     get query () : string {

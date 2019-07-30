@@ -1,5 +1,8 @@
 import { CreateLayer } from "./2.create";
-import mysql from 'mysql';
+
+/**
+ * class for defining simple read method.
+ */
 export class ReadLayer extends CreateLayer {
     /**
      * find rows by id
